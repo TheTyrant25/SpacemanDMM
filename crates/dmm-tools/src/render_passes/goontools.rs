@@ -32,7 +32,6 @@ impl RenderPass for Goon_AutoCables {
         let mut linked_dirs = 0;
         'dir: for &check_dir in Dir::CARDINALS {
             let turf = neighborhood.offset(check_dir);
-
             // Don't link between SMES and terminal
             if under_smes {
                 for atom in turf {
@@ -49,15 +48,22 @@ impl RenderPass for Goon_AutoCables {
             }
 
             for atom in turf {
-                if atom.istype("/obj/structure/cable/")
+                if atom.istype("/obj/cable")
                     && atom
                         .get_var("cable_layer", objtree)
                         .as_str()
                         .unwrap_or("l2")
                         == cable_layer
                 {
-                    linked_dirs |= check_dir.to_int();
-                    break;
+                    if atom.istype("/obj/cable/auto"){
+                        linked_dirs |= check_dir.to_int();
+                        break;
+                    }
+                    else if atom.icon_state == check_dir {
+                        linked_dirs |= check_dir.to_int();
+                        break;
+                    }
+
                 }
             }
         }
@@ -87,4 +93,3 @@ impl RenderPass for Goon_AutoCables {
         false
     }
 }
-
